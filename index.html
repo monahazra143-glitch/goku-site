@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Omkar AI | Goku AI for Android</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#f7f1ea;--glass:rgba(255,255,255,.75);--glass2:rgba(40,20,0,.05);--ink:#1d1520;--mute:#6f6578;--line:rgba(60,30,0,.14);--a1:#2f6bff;--a2:#1a3fd6;--ok:#0fa56c;--buy1:#e0233f;--buy2:#a31233;--orb:rgba(40,100,255,.28);
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -141,21 +142,31 @@ input[type=email]{width:100%;padding:15px;border-radius:14px;border:1px solid va
 
 <div id="v-dash" class="view">
   <h1 style="font-size:34px;margin-top:6px">Dashboard</h1>
+
   <div id="login" class="card rise">
     <h2>Email se login</h2>
-    <p>Licence aur device verify karne ke liye apna email daalein.</p>
+    <p>Licence aur device verify karne ke liye apna email daalein. Hum aapko login link bhejenge.</p>
     <input id="em" type="email" placeholder="you@email.com" autocomplete="email">
-    <button class="btn buy" onclick="login()">Login</button>
+    <button id="lbtn" class="btn buy" onclick="login()">Login link bhejein</button>
+    <div id="sent" class="warn" style="display:none;margin:14px 0 0"></div>
   </div>
+
+  <div id="nolic" class="card rise" style="display:none">
+    <h2>Licence nahi mila</h2>
+    <p id="nolic-t">Is email par abhi koi licence nahi hai.</p>
+    <a class="btn dl" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/latest" target="_blank" rel="noopener">⬇ Download free</a>
+    <button class="btn" onclick="logout()">Log out</button>
+  </div>
+
   <div id="panel" style="display:none">
-    <div class="warn st" style="--i:0">Preview: yahan sample data dikh raha hai. Asli login aur licence check backend jodne ke baad chalega.</div>
+    <div class="warn st" style="--i:0">Login: <span id="who"></span></div>
     <div class="card st" style="--i:1">
-      <h2>Goku AI for Android <span class="pill" style="margin-left:6px"><span class="dot"></span><span class="ok">ACTIVE</span></span></h2>
+      <h2>Goku AI for Android <span class="pill" style="margin-left:6px"><span class="dot"></span><span class="ok" id="pst">ACTIVE</span></span></h2>
       <small style="color:var(--mute)">Licence key</small>
       <div class="row st" style="--i:2"><div class="box key" id="key">••••-••••-••••-••••</div><button class="ibtn" aria-label="Show key" onclick="tkey()">👁</button><button class="ibtn" aria-label="Copy key" onclick="ckey()">⧉</button></div>
-      <div class="row st" style="--i:3"><div class="box"><small>Status</small><span class="ok">● Active</span></div><div class="box"><small>Phone</small>Linked</div></div>
-      <div class="box st" style="--i:4"><small>Linked on</small>25 Sept 2026</div>
-      <div class="box st" style="--i:5"><small>Registered phone · 1 of 1</small><b>vivo V2414</b><small>v1.0.0.7 · last seen 20 Oct</small></div>
+      <div class="row st" style="--i:3"><div class="box"><small>Status</small><span class="ok" id="st2">● Active</span></div><div class="box"><small>Phone</small><span id="phst">Linked</span></div></div>
+      <div class="box st" style="--i:4"><small>Linked on</small><span id="lnk">-</span></div>
+      <div class="box st" style="--i:5"><small>Registered phone · 1 of 1</small><b id="pname">-</b><small id="pmeta">-</small></div>
       <a class="btn dl st" style="--i:6;background:linear-gradient(135deg,#0fa56c,#0b7d52);border-color:transparent;color:#fff" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/latest" target="_blank" rel="noopener">⬇ Download Goku AI.apk</a>
     </div>
   </div>
@@ -170,15 +181,84 @@ input[type=email]{width:100%;padding:15px;border-radius:14px;border:1px solid va
 <div id="toast"></div>
 
 <script>
-var KEY="GOKU-7XQ2-M9PD-4TLK",shown=false,app=document.getElementById("app");
-function toast(t){var e=document.getElementById("toast");e.textContent=t;e.className="on";setTimeout(function(){e.className=""},1800)}
+var SB_URL="https://puwlexcmclucgfxiibyd.supabase.co";
+var SB_KEY="sb_publishable_7oYcsRl5Bjpx4aqONwTt8g_cEaD_JBD";
+var sb=window.supabase.createClient(SB_URL,SB_KEY);
+var KEY="",shown=false,loadedFor="",app=document.getElementById("app");
+function $(id){return document.getElementById(id)}
+function toast(t){var e=$("toast");e.textContent=t;e.className="on";setTimeout(function(){e.className=""},2200)}
 function soon(){toast("Coming soon")}
 function menu(){app.classList.toggle("open")}
-function go(v,id){app.classList.remove("open");["home","dash","setup"].forEach(function(x){document.getElementById("v-"+x).className="view"+(x===v?" on":"")});window.scrollTo(0,0);if(id){setTimeout(function(){var e=document.getElementById(id);if(e)e.scrollIntoView()},40)}}
-function login(){var e=document.getElementById("em").value;if(e.indexOf("@")<1){toast("Sahi email daalein");return}document.getElementById("login").style.display="none";var p=document.getElementById("panel");p.style.display="block";void p.offsetWidth;p.className="show"}
-function logout(){document.getElementById("login").style.display="block";var p=document.getElementById("panel");p.style.display="none";p.className="";go("home");toast("Logged out")}
-function tkey(){if(shown){shown=false;document.getElementById("key").textContent="••••-••••-••••-••••";return}shown=true;var el=document.getElementById("key"),c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",n=0;var t=setInterval(function(){n++;var s="";for(var i=0;i<KEY.length;i++){s+=(KEY[i]==="-"||i<n)?KEY[i]:c[Math.floor(Math.random()*c.length)]}el.textContent=s;if(n>=KEY.length)clearInterval(t)},45)}
-function ckey(){try{navigator.clipboard.writeText(KEY);toast("Copied")}catch(e){toast("Copy nahi hua")}}
+function go(v,id){app.classList.remove("open");["home","dash","setup"].forEach(function(x){$("v-"+x).className="view"+(x===v?" on":"")});window.scrollTo(0,0);if(id){setTimeout(function(){var e=$(id);if(e)e.scrollIntoView()},40)}}
+
+function showLogin(){
+  $("login").style.display="block";$("nolic").style.display="none";
+  var p=$("panel");p.style.display="none";p.className="";
+  KEY="";shown=false;loadedFor="";$("key").textContent="••••-••••-••••-••••";
+}
+function fmt(d,withYear){
+  if(!d)return "-";
+  var x=new Date(d);if(isNaN(x))return "-";
+  var o={day:"numeric",month:"short"};if(withYear)o.year="numeric";
+  return x.toLocaleDateString("en-GB",o);
+}
+async function login(){
+  var e=$("em").value.trim();
+  if(e.indexOf("@")<1){toast("Sahi email daalein");return}
+  var b=$("lbtn");b.disabled=true;b.textContent="Bhej rahe hain...";
+  var r=await sb.auth.signInWithOtp({email:e,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
+  b.disabled=false;b.textContent="Login link bhejein";
+  if(r.error){toast("Error: "+r.error.message);return}
+  var s=$("sent");s.style.display="block";
+  s.textContent="Link bhej diya gaya: "+e+". Email kholkar link par tap karein (spam folder bhi dekhein).";
+}
+async function loadLicense(user){
+  if(!user||loadedFor===user.id)return;
+  loadedFor=user.id;
+  $("login").style.display="none";
+  var r=await sb.from("licenses").select("*").limit(1).maybeSingle();
+  if(r.error){toast("Data load nahi hua");$("login").style.display="block";loadedFor="";return}
+  if(!r.data){
+    $("nolic").style.display="block";
+    $("nolic-t").textContent="Is email ("+user.email+") par abhi koi licence nahi hai.";
+    return;
+  }
+  var d=r.data,act=String(d.status||"").toLowerCase()==="active";
+  KEY=d.license_key||"";
+  $("who").textContent=user.email;
+  $("pst").textContent=String(d.status||"").toUpperCase();
+  $("st2").textContent="● "+(act?"Active":(d.status||"Inactive"));
+  $("phst").textContent=d.phone_name?"Linked":"Not linked";
+  $("lnk").textContent=fmt(d.linked_at,true);
+  $("pname").textContent=d.phone_name||"Koi phone link nahi";
+  $("pmeta").textContent=(d.app_version?"v"+d.app_version+" · ":"")+"last seen "+fmt(d.last_seen,false);
+  var p=$("panel");p.style.display="block";void p.offsetWidth;p.className="show";
+}
+async function logout(){
+  await sb.auth.signOut();
+  showLogin();go("home");toast("Logged out");
+}
+function tkey(){
+  if(!KEY){return}
+  if(shown){shown=false;$("key").textContent="••••-••••-••••-••••";return}
+  shown=true;
+  var el=$("key"),c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",n=0;
+  var t=setInterval(function(){n++;var s="";for(var i=0;i<KEY.length;i++){s+=(KEY[i]==="-"||i<n)?KEY[i]:c[Math.floor(Math.random()*c.length)]}el.textContent=s;if(n>=KEY.length)clearInterval(t)},45);
+}
+function ckey(){
+  if(!KEY){return}
+  try{navigator.clipboard.writeText(KEY);toast("Copied")}catch(e){toast("Copy nahi hua")}
+}
+
+var fromLink=/access_token|[?&]code=/.test(window.location.hash+window.location.search);
+sb.auth.onAuthStateChange(function(ev,sess){
+  if(sess&&sess.user){
+    setTimeout(function(){
+      loadLicense(sess.user);
+      if(fromLink&&ev==="SIGNED_IN"){go("dash");fromLink=false;history.replaceState(null,"",window.location.pathname)}
+    },0);
+  }else if(ev==="SIGNED_OUT"){showLogin()}
+});
 </script>
 </body>
 </html>
