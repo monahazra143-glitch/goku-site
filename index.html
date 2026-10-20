@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Omkar AI | Goku AI for Android</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f1ea;--glass:rgba(255,255,255,.75);--glass2:rgba(40,20,0,.05);--ink:#1d1520;--mute:#6f6578;--line:rgba(60,30,0,.14);--a1:#2f6bff;--a2:#1a3fd6;--ok:#0fa56c;--buy1:#e0233f;--buy2:#a31233;--orb:rgba(40,100,255,.28);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0b14;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.06);--ink:#f4efff;--mute:#a79eb8;--line:rgba(255,255,255,.11);--a1:#6ea0ff;--ok:#2bd394;--orb:rgba(40,100,255,.24)}}
+:root[data-theme="dark"]{--bg:#0e0b14;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.06);--ink:#f4efff;--mute:#a79eb8;--line:rgba(255,255,255,.11);--a1:#6ea0ff;--ok:#2bd394;--orb:rgba(40,100,255,.24)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Sora",system-ui,sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:25}
+.orb{position:fixed;border-radius:50%;filter:blur(70px);background:var(--orb);pointer-events:none;z-index:0;animation:drift 14s ease-in-out infinite alternate}
+.o1{width:320px;height:320px;top:-80px;right:-100px}
+.o2{width:260px;height:260px;bottom:8%;left:-110px;background:rgba(0,200,255,.16);animation-duration:18s}
+@keyframes drift{to{transform:translate(-40px,60px) scale(1.15)}}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font:800 19px "Sora",system-ui,sans-serif;background:none;border:0;color:var(--ink);cursor:pointer;padding:0}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--a1),var(--a2));color:#fff;display:grid;place-items:center;font-weight:800;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(60,120,255,.5)}50%{box-shadow:0 0 22px 4px rgba(60,120,255,.45)}}
+.burger{position:relative;width:46px;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--glass2);cursor:pointer;z-index:40}
+.burger i{position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .35s,opacity .25s,top .35s}
+.burger i:nth-child(1){top:15px}.burger i:nth-child(2){top:22px}.burger i:nth-child(3){top:29px}
+.open .burger i:nth-child(1){top:22px;transform:rotate(45deg)}.open .burger i:nth-child(2){opacity:0}.open .burger i:nth-child(3){top:22px;transform:rotate(-45deg)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--a1);outline-offset:2px}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:22px 16px 60px}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:26px;padding:24px;margin-bottom:18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.rise{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--glass2);border-radius:99px;padding:7px 14px;font-size:13px;color:var(--mute)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);position:relative}
+.dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ok);animation:ring 1.8s ease-out infinite}
+@keyframes ring{to{transform:scale(3.2);opacity:0}}
+h1{font-size:clamp(36px,11vw,52px);line-height:1.08;margin:18px 0 12px;font-weight:800;letter-spacing:-.02em}
+.g{background:linear-gradient(100deg,var(--a1),var(--a2),var(--a1));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 5s linear infinite}
+@keyframes flow{to{background-position:200% 0}}
+h2{font-size:24px;margin:0 0 10px}
+p{margin:0 0 12px;color:var(--mute)}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 0}
+.feat div{background:var(--glass2);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:14px}
+.feat b{display:block;font-size:22px}
+.price{font-size:56px;font-weight:800;line-height:1.05;letter-spacing:-.03em}
+.acc{color:var(--a1);font-weight:600}
+.btn{position:relative;overflow:hidden;display:block;width:100%;text-align:center;text-decoration:none;font:600 17px "Sora",system-ui,sans-serif;border-radius:16px;padding:16px;margin-top:12px;border:1px solid var(--line);background:var(--glass2);color:var(--ink);cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.buy{background:linear-gradient(135deg,var(--buy1),var(--buy2));border-color:transparent;color:#fff}
+.btn.dl::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-20deg);animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+.btn[disabled]{opacity:.6;cursor:not-allowed}
+ul.l{padding-left:20px;color:var(--mute);margin:8px 0 0}
+.soon{display:inline-block;font-size:11px;border-radius:99px;padding:2px 10px;background:var(--glass2);border:1px solid var(--line);color:var(--a1);margin-left:6px}
+details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:600}
+.view{display:none}.view.on{display:block}
+#scrim{position:fixed;inset:0;z-index:28;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(88vw,380px);z-index:30;background:var(--bg);border-left:1px solid var(--line);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 76px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.open #scrim{opacity:1;visibility:visible}
+.open #drawer{transform:none;visibility:visible}
+.mi{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;margin-bottom:6px;padding:10px 13px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:500 14px "Sora",system-ui,sans-serif;cursor:pointer;opacity:0;transform:translateX(30px)}
+.open .mi{animation:slidein .5s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*45ms + 150ms)}
+@keyframes slidein{to{opacity:1;transform:none}}
+.mi:hover{border-color:var(--a1)}.mi.out{color:#ff5b73}
+.sec{font-size:12px;color:var(--mute);margin:12px 0 6px}
+input[type=email]{width:100%;padding:15px;border-radius:14px;border:1px solid var(--line);background:var(--glass2);color:var(--ink);font:16px "Sora",system-ui,sans-serif;margin:8px 0}
+.box{background:var(--glass2);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.box small{display:block;color:var(--mute)}
+.key{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;word-break:break-all;color:var(--ok)}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.ibtn{flex:0 0 52px;border-radius:14px;border:1px solid var(--line);background:var(--glass2);color:var(--ink);font-size:18px;cursor:pointer}
+.ok{color:var(--ok);font-weight:600}
+.warn{border-left:4px solid var(--a1);background:var(--glass2);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--mute);margin-bottom:14px}
+#panel .st{opacity:0}
+#panel.show .st{animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*110ms)}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.mi,#panel .st{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div>
+<div id="app">
+<header>
+  <button class="brand" onclick="go('home')"><span class="logo">O</span>The Omkar AI</button>
+  <button class="burger" aria-label="Menu" onclick="menu()"><i></i><i></i><i></i></button>
+</header>
+<div id="scrim" onclick="menu()"></div>
+<nav id="drawer">
+  <div class="sec" style="margin-top:0">Product</div>
+  <button class="mi" style="--i:0" onclick="soon()">Goku AI for Windows <span class="soon">Coming soon</span></button>
+  <button class="mi" style="--i:1" onclick="go('home')">Goku AI for Android <span class="ok">Live</span></button>
+  <button class="mi" style="--i:2" onclick="soon()">Goku Sites <span class="soon">Coming soon</span></button>
+  <button class="mi" style="--i:3" onclick="soon()">Goku AI Home Box <span class="soon">Coming soon</span></button>
+  <button class="mi" style="--i:4" onclick="soon()">Goku AI Voice Support <span class="soon">Coming soon</span></button>
+  <button class="mi" style="--i:5" onclick="go('home')">Ghost Editor</button>
+  <button class="mi" style="--i:6" onclick="go('home','features')">Features</button>
+  <button class="mi" style="--i:7" onclick="go('home','pricing')">Pricing</button>
+  <button class="mi" style="--i:8" onclick="go('home','faq')">FAQ</button>
+  <button class="mi" style="--i:9" onclick="go('home','about')">About</button>
+  <div class="sec">Account</div>
+  <button class="mi" style="--i:10" onclick="go('dash')">Dashboard</button>
+  <button class="mi" style="--i:11" onclick="go('setup')">Setup guide</button>
+  <button class="mi out" style="--i:12" onclick="logout()">Log out</button>
+</nav>
+
+<main>
+<div id="v-home" class="view on">
+  <div class="card rise" id="features">
+    <span class="pill"><span class="dot"></span>Android · v1.0.0.7 · Live</span>
+    <h1>Goku AI<br><span class="g">for Android</span></h1>
+    <p>Bolo aur aapka phone kaam kare: calls, WhatsApp, apps, screen aur files. English aur Hindi, ek licence, ek phone.</p>
+    <div class="feat"><div><b>🛡</b>Voice Guardian</div><div><b>🧠</b>Long-term memory</div><div><b>💻</b>Links to your PC</div><div><b>🗣</b>English + Hindi</div></div>
+  </div>
+
+  <div class="card rise" id="pricing" style="animation-delay:.12s">
+    <div class="price">₹1500</div>
+    <div class="acc">Lifetime licence · ek baar, hamesha ke liye</div>
+    <p style="margin-top:10px">1 licence = 1 phone. Phone badalna ho to dashboard se purana phone log out karein.</p>
+    <button class="btn buy" disabled>Buy Goku AI for Android · Coming soon</button>
+    <a class="btn dl" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/latest" target="_blank" rel="noopener">⬇ Download free</a>
+    <p style="margin-top:14px;font-size:14px">Free download se app try karein. Licence lene par saare tools unlock ho jate hain.</p>
+  </div>
+
+  <div class="card rise" style="animation-delay:.24s">
+    <h2>Pro Max</h2>
+    <p>Alag se milta hai, zaroori nahi. Licence ke upar extra features:</p>
+    <ul class="l"><li>Advanced voice commands</li><li>Priority updates</li><li>Extra automation tools</li><li>Priority support</li></ul>
+    <h2 style="margin-top:22px">Ultra <span class="soon">Coming soon</span></h2>
+  </div>
+
+  <div class="card" id="faq">
+    <h2>FAQ</h2>
+    <details><summary>APK kaise install karein?</summary><p style="margin-top:8px">Free download se APK kholein aur “Install unknown apps” ki permission dein.</p></details>
+    <details><summary>Update kaise karein?</summary><p style="margin-top:8px">App mein 3 line menu → Upgrade → Check update.</p></details>
+    <details><summary>Phone badalna ho to?</summary><p style="margin-top:8px">Dashboard se purana phone log out karein, phir naye phone par key daalein.</p></details>
+  </div>
+  <div class="card" id="about"><h2>About</h2><p>Goku AI, The Omkar AI ka Android assistant hai.</p></div>
+</div>
+
+<div id="v-dash" class="view">
+  <h1 style="font-size:34px;margin-top:6px">Dashboard</h1>
+  <div id="login" class="card rise">
+    <h2>Email se login</h2>
+    <p>Licence aur device verify karne ke liye apna email daalein.</p>
+    <input id="em" type="email" placeholder="you@email.com" autocomplete="email">
+    <button class="btn buy" onclick="login()">Login</button>
+  </div>
+  <div id="panel" style="display:none">
+    <div class="warn st" style="--i:0">Preview: yahan sample data dikh raha hai. Asli login aur licence check backend jodne ke baad chalega.</div>
+    <div class="card st" style="--i:1">
+      <h2>Goku AI for Android <span class="pill" style="margin-left:6px"><span class="dot"></span><span class="ok">ACTIVE</span></span></h2>
+      <small style="color:var(--mute)">Licence key</small>
+      <div class="row st" style="--i:2"><div class="box key" id="key">••••-••••-••••-••••</div><button class="ibtn" aria-label="Show key" onclick="tkey()">👁</button><button class="ibtn" aria-label="Copy key" onclick="ckey()">⧉</button></div>
+      <div class="row st" style="--i:3"><div class="box"><small>Status</small><span class="ok">● Active</span></div><div class="box"><small>Phone</small>Linked</div></div>
+      <div class="box st" style="--i:4"><small>Linked on</small>25 Sept 2026</div>
+      <div class="box st" style="--i:5"><small>Registered phone · 1 of 1</small><b>vivo V2414</b><small>v1.0.0.7 · last seen 20 Oct</small></div>
+      <a class="btn dl st" style="--i:6;background:linear-gradient(135deg,#0fa56c,#0b7d52);border-color:transparent;color:#fff" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/latest" target="_blank" rel="noopener">⬇ Download Goku AI.apk</a>
+    </div>
+  </div>
+</div>
+
+<div id="v-setup" class="view">
+  <div class="card rise"><h2>Setup guide</h2>
+    <ul class="l"><li>Free download se APK install karein.</li><li>Dashboard se licence key copy karein.</li><li>App kholkar key daalein.</li><li>Phone link ho jayega.</li></ul></div>
+</div>
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+var KEY="GOKU-7XQ2-M9PD-4TLK",shown=false,app=document.getElementById("app");
+function toast(t){var e=document.getElementById("toast");e.textContent=t;e.className="on";setTimeout(function(){e.className=""},1800)}
+function soon(){toast("Coming soon")}
+function menu(){app.classList.toggle("open")}
+function go(v,id){app.classList.remove("open");["home","dash","setup"].forEach(function(x){document.getElementById("v-"+x).className="view"+(x===v?" on":"")});window.scrollTo(0,0);if(id){setTimeout(function(){var e=document.getElementById(id);if(e)e.scrollIntoView()},40)}}
+function login(){var e=document.getElementById("em").value;if(e.indexOf("@")<1){toast("Sahi email daalein");return}document.getElementById("login").style.display="none";var p=document.getElementById("panel");p.style.display="block";void p.offsetWidth;p.className="show"}
+function logout(){document.getElementById("login").style.display="block";var p=document.getElementById("panel");p.style.display="none";p.className="";go("home");toast("Logged out")}
+function tkey(){if(shown){shown=false;document.getElementById("key").textContent="••••-••••-••••-••••";return}shown=true;var el=document.getElementById("key"),c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",n=0;var t=setInterval(function(){n++;var s="";for(var i=0;i<KEY.length;i++){s+=(KEY[i]==="-"||i<n)?KEY[i]:c[Math.floor(Math.random()*c.length)]}el.textContent=s;if(n>=KEY.length)clearInterval(t)},45)}
+function ckey(){try{navigator.clipboard.writeText(KEY);toast("Copied")}catch(e){toast("Copy nahi hua")}}
+</script>
+</body>
+</html>
