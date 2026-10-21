@@ -2,7 +2,7 @@ Product
 
 Account
 
-Android · v1.0.0.7 · Live
+Android · Live
 
 # Goku AI for Android
 
@@ -75,7 +75,7 @@ PhoneLinked
 
 Linked on25 Sept 2026
 
-Registered phone · 1 of 1**vivo V2414**v1.0.0.7 · last seen 20 Oct
+Registered phone · 1 of 1
 
 [⬇ Download Goku AI.apk](https://github.com/monahazra143-glitch/Goku-Ai/releases/latest)
 
