@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Goku AI | Ultra Instinct voice assistant for Android</title>
+<meta name="description" content="Goku AI: real-time voice assistant for Android. Calls, WhatsApp, phone control, offline mode, Hindi, English and Bengali.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#060914">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f7f1ea;--glass:rgba(255,255,255,.75);--glass2:rgba(40,20,0,.05);--ink:#1d1520;--mute:#6f6578;--line:rgba(60,30,0,.14);--a1:#2f6bff;--a2:#1a3fd6;--ok:#0fa56c;--bad:#e0233f;--buy1:#e0233f;--buy2:#a31233;--orb:rgba(40,100,255,.28);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0b14;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.06);--ink:#f4efff;--mute:#a79eb8;--line:rgba(255,255,255,.11);--a1:#6ea0ff;--ok:#2bd394;--bad:#ff5b73;--orb:rgba(40,100,255,.24)}}
+:root[data-theme="dark"]{--bg:#0e0b14;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.06);--ink:#f4efff;--mute:#a79eb8;--line:rgba(255,255,255,.11);--a1:#6ea0ff;--ok:#2bd394;--bad:#ff5b73;--orb:rgba(40,100,255,.24)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Sora",system-ui,sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:25}
+.orb{position:fixed;border-radius:50%;filter:blur(70px);background:var(--orb);pointer-events:none;z-index:0;animation:drift 14s ease-in-out infinite alternate}
+.o1{width:320px;height:320px;top:-80px;right:-100px}
+.o2{width:260px;height:260px;bottom:8%;left:-110px;background:rgba(0,200,255,.16);animation-duration:18s}
+@keyframes drift{to{transform:translate(-40px,60px) scale(1.15)}}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font:800 19px "Sora",system-ui,sans-serif;background:none;border:0;color:var(--ink);cursor:pointer;padding:0}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--a1),var(--a2));color:#fff;display:grid;place-items:center;font-weight:800;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(60,120,255,.5)}50%{box-shadow:0 0 22px 4px rgba(60,120,255,.45)}}
+.burger{position:relative;width:46px;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--glass2);cursor:pointer;z-index:40}
+.burger i{position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .35s,opacity .25s,top .35s}
+.burger i:nth-child(1){top:15px}.burger i:nth-child(2){top:22px}.burger i:nth-child(3){top:29px}
+.open .burger i:nth-child(1){top:22px;transform:rotate(45deg)}.open .burger i:nth-child(2){opacity:0}.open .burger i:nth-child(3){top:22px;transform:rotate(-45deg)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--a1);outline-offset:2px}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:22px 16px 60px}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:26px;padding:24px;margin-bottom:18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.rise{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--glass2);border-radius:99px;padding:7px 14px;font-size:13px;color:var(--mute)}
+.dot{--c:var(--ok);width:8px;height:8px;border-radius:50%;background:var(--c);position:relative}
+.dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--c);animation:ring 1.8s ease-out infinite}
+@keyframes ring{to{transform:scale(3.2);opacity:0}}
+h1{font-size:clamp(36px,11vw,52px);line-height:1.08;margin:18px 0 12px;font-weight:800;letter-spacing:-.02em}
+.g{background:linear-gradient(100deg,var(--a1),var(--a2),var(--a1));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 5s linear infinite}
+@keyframes flow{to{background-position:200% 0}}
+h2{font-size:24px;margin:0 0 10px}
+p{margin:0 0 12px;color:var(--mute)}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 0}
+.feat div{background:var(--glass2);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:14px}
+.feat b{display:block;font-size:22px}
+.price{font-size:52px;font-weight:800;line-height:1.05;letter-spacing:-.03em}
+.price small{font-size:20px;font-weight:600;color:var(--mute);letter-spacing:0}
+.acc{color:var(--a1);font-weight:600}
+.btn{position:relative;overflow:hidden;display:block;width:100%;text-align:center;text-decoration:none;font:600 17px "Sora",system-ui,sans-serif;border-radius:16px;padding:16px;margin-top:12px;border:1px solid var(--line);background:var(--glass2);color:var(--ink);cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.buy{background:linear-gradient(135deg,var(--buy1),var(--buy2));border-color:transparent;color:#fff}
+.btn.dl::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-20deg);animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+.btn[disabled]{opacity:.6;cursor:not-allowed}
+ul.l{padding-left:20px;color:var(--mute);margin:8px 0 0}
+.soon{display:inline-block;font-size:11px;border-radius:99px;padding:2px 10px;background:var(--glass2);border:1px solid var(--line);color:var(--a1);margin-left:6px}
+details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:600}
+.view{display:none}.view.on{display:block}
+#scrim,#scrim2{position:fixed;inset:0;z-index:28;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+#scrim2{z-index:33}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(88vw,380px);z-index:30;background:var(--bg);border-left:1px solid var(--line);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 76px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.open #scrim{opacity:1;visibility:visible}
+.open #drawer{transform:none;visibility:visible}
+.mi{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;margin-bottom:6px;padding:10px 13px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:500 14px "Sora",system-ui,sans-serif;cursor:pointer;opacity:0;transform:translateX(30px)}
+.open .mi{animation:slidein .5s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*45ms + 150ms)}
+@keyframes slidein{to{opacity:1;transform:none}}
+.mi:hover{border-color:var(--a1)}.mi.out{color:#ff5b73}
+.sec{font-size:12px;color:var(--mute);margin:12px 0 6px}
+.box{background:var(--glass2);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.box small{display:block;color:var(--mute)}
+.key{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;word-break:break-all;color:var(--ok)}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.ibtn{flex:0 0 52px;border-radius:14px;border:1px solid var(--line);background:var(--glass2);color:var(--ink);font-size:18px;cursor:pointer}
+.ok{color:var(--ok);font-weight:600}
+.bad{color:var(--bad);font-weight:600}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1d1520;border-color:rgba(0,0,0,.15)}
+.gbtn b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#4285f4,#ea4335 45%,#fbbc05 70%,#34a853);color:#fff;font-size:14px}
+/* compact dashboard card */
+.cmp{padding:16px;border-radius:22px}
+.cmp h2{font-size:18px;margin:0}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pill.sm{padding:4px 10px;font-size:12px}
+.who{font-size:12px;color:var(--mute);margin:4px 0 12px;word-break:break-all}
+.cmp .box{padding:9px 12px;margin-bottom:8px;border-radius:14px;font-size:14px}
+.cmp .box small{font-size:11px;line-height:1.4}
+.cmp .row{margin-bottom:8px;gap:8px}
+.cmp .row .box{margin:0;display:flex;align-items:center;font-size:13px;letter-spacing:.03em}
+.cmp .ibtn{flex:0 0 44px;font-size:16px;border-radius:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g2 .box{margin:0}
+.cmp .btn{padding:12px;font-size:15px;margin-top:4px;border-radius:14px}
+/* buy sheet */
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:35;max-width:560px;margin:0 auto;background:var(--bg);border:1px solid var(--line);border-radius:26px 26px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom,0px) + 16px);max-height:88vh;overflow:auto;transform:translateY(105%);transition:transform .4s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.buy #scrim2{opacity:1;visibility:visible}
+.buy #sheet{transform:none;visibility:visible}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sh h2{margin:0;font-size:20px}
+.x{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--glass2);color:var(--ink);font-size:18px;cursor:pointer}
+.plan{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;margin-bottom:8px;border-radius:14px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:600 15px "Sora",system-ui,sans-serif;cursor:pointer;text-align:left}
+.plan.on{border-color:var(--a1);box-shadow:inset 0 0 0 2px var(--a1)}
+.plan em{font-style:normal;font-size:11px;margin-left:8px;padding:2px 8px;border-radius:99px;background:var(--a1);color:#fff;font-weight:600}
+.hint{font-size:13px;margin:10px 0 0}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+#toast.on{opacity:1}
+#panel .st{opacity:0}
+#panel.show .st{animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*110ms)}
+.sk{display:flex;align-items:center;gap:8px;margin:26px 2px 12px;font:600 12px "JetBrains Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--a1)}
+.sc{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:12px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sc i{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--glass2);border:1px solid var(--line);font-style:normal;font-size:22px;margin-bottom:14px}
+.sc h3{margin:0 0 6px;font-size:18px}.sc p{margin:0;font-size:15px}
+.hero{text-align:center}.hero .pill{max-width:100%}
+.btn.ghost{background:var(--glass2)}
+.inp{display:block;width:100%;margin-top:10px;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--glass2);color:var(--ink);font:500 16px "Sora",system-ui,sans-serif}
+.or{display:flex;align-items:center;gap:10px;margin:16px 0 4px;color:var(--mute);font-size:13px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.mi,#panel .st{opacity:1;transform:none}}
+
+/* ===== Goku Ultra Instinct glass theme ===== */
+:root:root:root{color-scheme:dark;--bg:#060914;--glass:rgba(255,255,255,.065);--glass2:rgba(255,255,255,.07);--ink:#eef2ff;--mute:#a3add0;--line:rgba(190,205,255,.16);--a1:#8fb4ff;--a2:#3b6bff;--a3:#9d7bff;--ok:#2bd394;--bad:#ff5b73;--buy1:#3b6bff;--buy2:#7a4dff;--orb:rgba(60,110,255,.30)}
+body{background:radial-gradient(1200px 700px at 85% -10%,rgba(80,120,255,.22),transparent 60%),radial-gradient(900px 600px at -10% 40%,rgba(150,110,255,.16),transparent 60%),var(--bg);background-attachment:fixed}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 78% 12%,#cfe0ff,transparent),radial-gradient(1.4px 1.4px at 40% 70%,#fff,transparent),radial-gradient(1px 1px at 90% 62%,#cfe0ff,transparent),radial-gradient(1px 1px at 22% 88%,#fff,transparent),radial-gradient(1.2px 1.2px at 60% 36%,#fff,transparent);animation:tw 5s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.15}}
+.card,.sc,header,.box,#sheet,#drawer{box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 40px rgba(0,0,0,.35)}
+.card,.sc{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.035));border-color:var(--line)}
+header{background:rgba(8,12,30,.55)}
+#drawer,#sheet{background:rgba(8,12,28,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.brand small{display:block;font:500 10px "JetBrains Mono",monospace;letter-spacing:.18em;color:var(--mute);text-transform:uppercase;margin-top:-2px}
+.brand{text-align:left;line-height:1.1}
+.logo{background:none;animation:none;width:44px;height:44px;border-radius:14px;padding:0;border:1px solid var(--line);background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 24px rgba(80,130,255,.45);backdrop-filter:blur(8px)}
+.logo svg{width:34px;height:34px}
+.btn.buy{background:linear-gradient(135deg,var(--buy1),var(--buy2));box-shadow:0 8px 30px rgba(70,100,255,.4)}
+.g{background-image:linear-gradient(100deg,#fff,#8fb4ff,#9d7bff,#8fb4ff,#fff)}
+.core{position:relative;width:min(66vw,250px);aspect-ratio:1;margin:6px auto 22px}
+.core b{position:absolute;border-radius:50%;inset:0;background:conic-gradient(from 0deg,transparent 0,#8fb4ff 30%,#fff 40%,transparent 62%);-webkit-mask:radial-gradient(circle,transparent 64%,#000 66%);mask:radial-gradient(circle,transparent 64%,#000 66%);animation:spin 6s linear infinite;filter:drop-shadow(0 0 10px #6ea0ff)}
+.core b+b{inset:9%;background:conic-gradient(from 90deg,transparent 0,#9d7bff 30%,#e5dcff 42%,transparent 62%);animation-duration:9s;animation-direction:reverse;filter:drop-shadow(0 0 10px #9d7bff)}
+.core b+b+b{inset:18%;background:conic-gradient(from 200deg,transparent 0,#4fd0ff 30%,transparent 55%);animation-duration:4.5s;filter:drop-shadow(0 0 8px #4fd0ff)}
+.core em{position:absolute;inset:26%;border-radius:50%;background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.65),rgba(120,160,255,.28) 38%,rgba(14,22,70,.75));border:1px solid rgba(255,255,255,.3);box-shadow:inset 0 2px 8px rgba(255,255,255,.4),0 0 50px rgba(90,140,255,.7);display:grid;place-items:center;animation:breathe 3.4s ease-in-out infinite}
+.core em svg{width:62%;height:62%}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes breathe{50%{transform:scale(1.07);box-shadow:inset 0 2px 8px rgba(255,255,255,.4),0 0 80px rgba(130,170,255,.9)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+.stats div{text-align:center;padding:14px 6px;border-radius:18px;background:var(--glass2);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.stats b{display:block;font-size:26px;background:linear-gradient(120deg,#fff,#8fb4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats span{font-size:12px;color:var(--mute)}
+.hl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hl .sc{margin:0;padding:16px}.hl .sc i{width:40px;height:40px;font-size:19px;margin-bottom:10px}.hl .sc h3{font-size:15px}.hl .sc p{font-size:13px}
+.pg{padding:8px 2px 14px}.pg h1{margin:6px 0 8px;font-size:clamp(30px,9vw,42px)}
+.tag{display:inline-block;font:600 11px "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:4px}
+.stp{display:flex;gap:14px;align-items:flex-start;margin:0 0 12px}.stp>b{flex:0 0 36px;height:36px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--a2),var(--a3));color:#fff;box-shadow:0 0 18px rgba(90,120,255,.5)}
+.stp p{margin:0}.stp h3{margin:0 0 2px;font-size:16px}
+.chip{display:inline-block;margin:0 6px 8px 0;padding:6px 12px;border-radius:99px;font-size:13px;background:var(--glass2);border:1px solid var(--line);color:var(--ink)}
+.tl{position:relative;padding-left:20px;border-left:1px solid var(--line);margin:0 0 4px 6px}
+.tl .sc{margin-left:6px}.tl .sc::before{content:"";position:absolute;left:-27px;top:26px;width:12px;height:12px;border-radius:50%;background:var(--a2);box-shadow:0 0 14px var(--a1)}
+.tl .sc{position:relative}
+.cmpt{width:100%;border-collapse:collapse;font-size:14px}.cmpt td,.cmpt th{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left}.cmpt th{color:var(--mute);font-weight:600;font-size:12px}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin-bottom:8px;border-radius:14px;background:var(--glass2);border:1px solid var(--line)}
+.pr em{font-style:normal;font-size:11px;margin-left:8px;padding:2px 8px;border-radius:99px;background:var(--a2);color:#fff}
+footer{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 36px);text-align:center;font-size:13px;color:var(--mute)}
+footer a{color:var(--a1);margin:0 8px;cursor:pointer;text-decoration:none}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.core b,.core em{animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#8fb4ff"/><stop offset="1" stop-color="#6a4dff"/></linearGradient>
+<symbol id="lg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="rgba(255,255,255,.07)" stroke="url(#lgg)" stroke-width="2.5"/><circle cx="32" cy="32" r="21" fill="none" stroke="url(#lgg)" stroke-width="1.4" stroke-dasharray="2 5" stroke-linecap="round"/><path d="M37 11 19 35h11l-3 18 18-26H34z" fill="url(#lgg)"/></symbol></defs></svg>
+<div class="orb o1"></div><div class="orb o2"></div>
+<div id="app">
+<header>
+  <button class="brand" onclick="go('home')"><span class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#lg"/></svg></span><span>Goku AI<small>The Omkar AI</small></span></button>
+  <button class="burger" aria-label="Menu" onclick="menu()"><i></i><i></i><i></i></button>
+</header>
+<div id="scrim" onclick="menu()"></div>
+<nav id="drawer">
+  <div class="sec" style="margin-top:0">Goku AI</div>
+  <button class="mi" style="--i:0" onclick="go('home')">Home</button>
+  <button class="mi" style="--i:1" onclick="go('features')">Features</button>
+  <button class="mi" style="--i:2" onclick="go('how')">How it works</button>
+  <button class="mi" style="--i:3" onclick="go('themes')">Themes &amp; Cores</button>
+  <button class="mi" style="--i:4" onclick="go('pricing')">Pricing</button>
+  <button class="mi" style="--i:5" onclick="go('download')">Download &amp; Update</button>
+  <button class="mi" style="--i:6" onclick="go('safety')">Privacy &amp; Safety</button>
+  <button class="mi" style="--i:7" onclick="go('changelog')">What is new</button>
+  <button class="mi" style="--i:8" onclick="go('faq')">FAQ</button>
+  <button class="mi" style="--i:9" onclick="go('about')">About</button>
+  <div class="sec">More products</div>
+  <button class="mi" style="--i:10" onclick="go('win')">Goku AI for Windows <span class="soon">Coming soon</span></button>
+  <button class="mi" style="--i:11" onclick="soon()">Goku Sites <span class="soon">Coming soon</span></button>
+  <button class="mi" style="--i:12" onclick="soon()">Goku AI Home Box <span class="soon">Coming soon</span></button>
+  <div class="sec">Account</div>
+  <button class="mi" style="--i:13" onclick="go('dash')">Dashboard</button>
+  <button class="mi" style="--i:14" onclick="go('setup')">Setup guide</button>
+  <button class="mi out" style="--i:15" onclick="logout()">Log out</button>
+</nav>
+
+<main>
+<div id="v-home" class="view on">
+  <div class="card hero rise">
+    <span class="pill"><span class="dot"></span>Android · v1.2.40 · Live</span>
+    <div class="core" style="margin-top:22px"><b></b><b></b><b></b><em><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#lg"/></svg></em></div>
+    <h1>Goku AI<br><span class="g">Ultra Instinct voice</span></h1>
+    <p>Bolo aur aapka phone kaam kare: calls, WhatsApp, apps, notifications aur bahut kuch. Hindi, English aur Bengali, internet ho ya na ho.</p>
+    <a class="btn buy dl" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/download/V1.2.40/Goku_1.2.40.apk" target="_blank" rel="noopener">⬇ Download free · v1.2.40</a>
+    <button class="btn ghost" onclick="go('features')">See all features</button>
+    <a class="btn" href="https://whatsapp.com/channel/0029Vb9JyRIICVffWaoyax0f" target="_blank" rel="noopener">📢 Join our WhatsApp Channel</a>
+  </div>
+  <div class="stats rv"><div><b>3</b><span>Languages</span></div><div><b>10</b><span>Core styles</span></div><div><b>24/7</b><span>Wake word</span></div></div>
+  <div class="sk">Why Goku</div>
+  <div class="hl" id="hl"></div>
+  <div class="card rv" style="margin-top:18px"><h2>Offline bhi chalta hai</h2><p>Internet ON to Gemini ki live awaaz mein real-time baat. Internet OFF to Goku khud offline mode mein aa jata hai aur phone mein saved voice pack se bolta hai.</p><button class="btn" onclick="go('how')">How it works</button></div>
+  <div class="card rv"><div class="price">₹200 <small>se shuru</small></div><div class="acc">7 Days se Lifetime tak · Pro aur Pro Max</div><p style="margin-top:10px">Free mode mein roz 30 minute baat. Saare tools ke liye licence.</p><button class="btn buy" onclick="openBuy()">Buy Now</button><button class="btn" onclick="go('pricing')">All plans</button></div>
+</div>
+
+<div id="v-features" class="view"><div class="pg"><span class="tag">Features</span><h1>Everything <span class="g">Goku can do</span></h1><p>Ek awaaz, poora phone. Ye sab abhi app mein hai.</p></div><div id="featlist"></div></div>
+
+<div id="v-how" class="view"><div class="pg"><span class="tag">How it works</span><h1>Online, offline, <span class="g">hamesha ready</span></h1></div>
+  <div class="card rv"><div class="stp"><b>1</b><div><h3>Bolo ya "Hey Goku" kaho</h3><p>Wake word se Goku jaag jata hai. Poori baat sunta hai aur aap rukte hi jaldi jawab deta hai.</p></div></div>
+  <div class="stp"><b>2</b><div><h3>Internet ON: live voice</h3><p>Gemini Live ki real-time awaaz. Beech mein stop, ruko ya thamo bolo to Goku turant chup ho jata hai.</p></div></div>
+  <div class="stp"><b>3</b><div><h3>Internet OFF: offline mode</h3><p>Goku khud offline mode mein switch hota hai. Voice pack mein saved awaaz aur offline brain se jawab deta hai.</p></div></div>
+  <div class="stp" style="margin:0"><b>4</b><div><h3>Phone commands</h3><p>Call, WhatsApp, alarm, torch, music, hotspot, bluetooth, volume aur brightness (jaise: volume pachaas kar do). Pehli baar na ho to Goku khud 2-3 baar koshish karta hai.</p></div></div></div>
+  <div class="card rv"><h2>Multiple brains</h2><p>Gemini default hai. Na chale to OpenAI (ChatGPT) aur DeepSeek se jawab le sakta hai. Sub-agents mein aap chunte hain ki pehle kaun.</p></div>
+  <div class="card rv"><h2>Voice pack</h2><p>Ek baar internet aur Gemini key se Hindi, English aur Bengali ke common sentences download karo. Phir wahi awaaz offline bhi.</p><button class="btn buy" onclick="go('download')">Get the app</button></div>
+</div>
+
+<div id="v-themes" class="view"><div class="pg"><span class="tag">Themes</span><h1>Ten cores, <span class="g">four homes</span></h1><p>Theme mein apna Core aur UI chuno. Wahi floating overlay mein bhi dikhta hai.</p></div><div id="cores"></div>
+  <div class="sk">Home layouts</div><div class="card rv"><span class="chip">UI V1 · classic (default)</span><span class="chip">UI V2 · midnight</span><span class="chip">UI V3 · tile dashboard</span><span class="chip">UI V4 · talk-first</span><p style="margin-top:8px">Aur chaaron taraf phone ke corners tak jaati RGB edge light.</p></div></div>
+
+<div id="v-pricing" class="view"><div class="pg"><span class="tag">Pricing</span><h1>Simple <span class="g">plans</span></h1><p>1 licence key = 1 phone. Phone badalna ho to WhatsApp par humse contact karein, hum key naye phone par chala denge.</p></div>
+  <div class="card rv"><h2>Free</h2><p>Roz 30 minute live baat, bina licence ke. Download free.</p></div>
+  <div class="card rv"><h2>Goku AI Pro</h2><div id="pp"></div><p>Saare tools, phone control aur unlimited baat.</p></div>
+  <div class="card rv"><h2>Goku AI Pro Max <span class="soon">Lifetime</span></h2><div id="pm"></div><p>Ek baar payment, hamesha ke liye. Pro ke saare tools aur priority updates aur support.</p><button class="btn buy" onclick="openBuy()">Buy Now</button></div>
+  <div class="card rv"><h2>Free vs Pro</h2><table class="cmpt"><tr><th></th><th>Free</th><th>Pro / Max</th></tr><tr><td>Live talk</td><td>30 min/day</td><td>Unlimited</td></tr><tr><td>Phone control</td><td>Limited</td><td>Full</td></tr><tr><td>All tools</td><td>—</td><td>✓</td></tr><tr><td>Offline mode</td><td>✓</td><td>✓</td></tr></table></div>
+</div>
+
+<div id="v-download" class="view"><div class="pg"><span class="tag">Download</span><h1>Install in <span class="g">1 minute</span></h1></div>
+  <div class="card rv"><span class="pill"><span class="dot"></span>Latest · v1.2.40</span><p style="margin-top:12px">Android phone ke liye. Free download.</p><a class="btn buy dl" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/download/V1.2.40/Goku_1.2.40.apk" target="_blank" rel="noopener">⬇ Download Goku_1.2.40.apk</a><a class="btn" href="https://whatsapp.com/channel/0029Vb9JyRIICVffWaoyax0f" target="_blank" rel="noopener">📢 Updates ke liye WhatsApp Channel join karein</a></div>
+  <div class="card rv"><h2>Install</h2><div class="stp"><b>1</b><div><h3>APK kholo</h3><p>Download hone ke baad file par tap karo.</p></div></div><div class="stp"><b>2</b><div><h3>Permission do</h3><p>"Install unknown apps" allow karo.</p></div></div><div class="stp" style="margin:0"><b>3</b><div><h3>Setup</h3><p>Gemini key, permissions aur licence (ya Skip karke free mode).</p></div></div></div>
+  <div class="card rv"><h2>Update</h2><p>App mein 3 line menu → License / Upgrade → App Update → Check for updates. Naya version milte hi Install button aa jata hai, aur Notifications mein bhi khabar aati hai.</p><p>Purane version (jaise 1.2.15, 1.2.18) se bhi seedha isi tarah update ho jata hai. Aapka licence aur data safe rehta hai.</p></div>
+</div>
+
+<div id="v-safety" class="view"><div class="pg"><span class="tag">Privacy &amp; Safety</span><h1>Aapka phone, <span class="g">aapka control</span></h1></div><div id="safelist"></div></div>
+
+<div id="v-changelog" class="view"><div class="pg"><span class="tag">What is new</span><h1>Recent <span class="g">updates</span></h1></div><div class="tl" id="cl"></div></div>
+
+<div id="v-faq" class="view"><div class="pg"><span class="tag">FAQ</span><h1>Questions</h1></div><div class="card" id="faqbox"></div></div>
+
+<div id="v-about" class="view"><div class="pg"><span class="tag">About</span><h1>The <span class="g">Omkar AI</span></h1></div>
+  <div class="card rv"><p>Goku AI, The Omkar AI ka Android assistant hai: ek awaaz se poora phone chalane ke liye bana, Ultra Instinct ke andaaz mein.</p><p>Ye lagatar badhta hai. Har update ke baad Goku khud bata sakta hai ki kya badla (Personal mein Update events se sun sakte hain).</p><button class="btn" onclick="go('win')">Goku AI for Windows · coming soon</button></div></div>
+
+<div id="v-dash" class="view">
+  <h1 style="font-size:34px;margin-top:6px">Dashboard</h1>
+
+  <div id="login" class="card rise">
+    <h2>Login karein</h2>
+    <p>Google account se login karein. Licence kharidne ke baad wo yahin dikhega.</p>
+    <button class="btn gbtn" onclick="gLogin()"><b>G</b>Google se login karein</button>
+    <div class="or"><span>ya email se</span></div>
+    <input id="em" class="inp" type="email" placeholder="Email" autocomplete="email" inputmode="email">
+    <input id="pw" class="inp" type="password" placeholder="Password (kam se kam 6 akshar)" autocomplete="current-password">
+    <div class="row">
+      <button class="btn buy" onclick="emLogin()">Login</button>
+      <button class="btn" onclick="emSignup()">Sign up</button>
+    </div>
+    <p class="hint" id="emmsg"></p>
+    <p class="hint"><a href="#" onclick="emReset();return false" class="acc">Password bhool gaye?</a> · <a href="#" onclick="emResend();return false" class="acc">Verification email dobara bhejein</a></p>
+  </div>
+
+  <div id="nolic" class="card rise" style="display:none">
+    <h2>Licence nahi mila</h2>
+    <p id="nolic-t">Is account par abhi koi licence nahi hai.</p>
+    <button class="btn buy" onclick="openBuy()">Buy Now</button>
+    <a class="btn dl" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/download/V1.2.40/Goku_1.2.40.apk" target="_blank" rel="noopener">⬇ Download free</a>
+    <button class="btn" onclick="logout()">Log out</button>
+  </div>
+
+  <div id="panel" style="display:none">
+    <div class="card cmp st" style="--i:0">
+      <div class="hd"><h2>Goku AI for Android</h2><span class="pill sm"><span class="dot" id="pdot"></span><span class="ok" id="pst">ACTIVE</span></span></div>
+      <div class="who" id="who"></div>
+      <div class="row"><div class="box key" id="key">••••-••••-••••-••••</div><button class="ibtn" aria-label="Show key" onclick="tkey()">👁</button><button class="ibtn" aria-label="Copy key" onclick="ckey()">⧉</button></div>
+      <div class="g2">
+        <div class="box"><small>Plan</small><span id="plan">-</span></div>
+        <div class="box"><small>Valid till</small><span id="exp">-</span></div>
+        <div class="box"><small>Linked on</small><span id="lnk">-</span></div>
+        <div class="box"><small>Phone</small><span id="phst">-</span></div>
+      </div>
+      <div class="box"><small>Registered phone · 1 of 1</small><b id="pname">-</b> <small id="pmeta" style="display:inline">-</small></div>
+      <a class="btn dl" style="background:linear-gradient(135deg,#0fa56c,#0b7d52);border-color:transparent;color:#fff" href="https://github.com/monahazra143-glitch/Goku-Ai/releases/download/V1.2.40/Goku_1.2.40.apk" target="_blank" rel="noopener">⬇ Download Goku AI.apk</a>
+    </div>
+  </div>
+</div>
+
+<div id="v-win" class="view">
+  <div class="card rise hero">
+    <span class="pill"><span class="dot" style="--c:#e8a317"></span>Goku AI 1.0 for Windows · Coming soon</span>
+    <h1>The AI that<br><span class="g">operates your computer</span></h1>
+    <p>Aapka PC ab sirf sunega nahi, kaam bhi karega. Goku AI desktop par ek halke overlay ki tarah rahega, lagatar sunega, aur aapke asli apps mein kaam karega.</p>
+    <button class="btn buy" disabled>Coming soon</button>
+    <button class="btn ghost" onclick="var e=$('win-feat');if(e)e.scrollIntoView()">See everything it will do</button>
+  </div>
+  <div class="sk" id="win-feat">Planned for v1.0</div>
+  <div class="sc"><i>🎙</i><h3>Voice, English + Hindi</h3><p>Bolkar PC ko command dein, bina keyboard ke.</p></div>
+  <div class="sc"><i>🖥</i><h3>Works inside your apps</h3><p>Browser, WhatsApp, Excel, VS Code jaise asli apps mein kaam karne ka plan.</p></div>
+  <div class="sc"><i>📱</i><h3>Links with your phone</h3><p>Goku AI for Android ke saath jud kar ek hi licence se chalega.</p></div>
+  <p class="hint" style="text-align:center">Ye features abhi plan mein hain. Release se pehle badal sakte hain.</p>
+</div>
+
+<div id="v-setup" class="view">
+  <div class="card rise"><h2>Setup guide</h2>
+    <ul class="l"><li>Free download se APK install karein.</li><li>Dashboard se licence key copy karein.</li><li>App kholkar key daalein.</li><li>Phone link ho jayega.</li></ul></div>
+</div>
+</main>
+<footer><a href="https://whatsapp.com/channel/0029Vb9JyRIICVffWaoyax0f" target="_blank" rel="noopener">WhatsApp Channel</a><a onclick="go('features')">Features</a><a onclick="go('pricing')">Pricing</a><a onclick="go('download')">Download</a><a onclick="go('faq')">FAQ</a><div style="margin-top:10px">© The Omkar AI · Goku AI v1.2.40</div></footer>
+
+<div id="scrim2" onclick="closeBuy()"></div>
+<div id="sheet" role="dialog" aria-label="Buy Goku AI">
+  <div class="sh"><h2>Plan chunein</h2><button class="x" aria-label="Close" onclick="closeBuy()">✕</button></div>
+  <div id="plans"></div>
+  <button class="btn buy" onclick="pay()">WhatsApp par Buy karein</button>
+  <p class="hint" id="sum"></p>
+  <p class="hint">Button dabane par hamara WhatsApp khulega. Apna plan aur email bhejein. Payment ke baad aapko licence key mil jayegi.</p>
+</div>
+</div>
+<div id="toast"></div>
+
+<script>
+var SB_URL="https://puwlexcmclucgfxiibyd.supabase.co";
+var SB_KEY="sb_publishable_7oYcsRl5Bjpx4aqONwTt8g_cEaD_JBD";
+var WA_LINK="https://whatsapp.com/channel/0029Vb9JyRIICVffWaoyax0f"; // WhatsApp Channel (updates). Channel mein log message nahi bhej sakte.
+var WA_NUMBER=""; // Buy ke liye apna WhatsApp number daalein, e.g. "919XXXXXXXXX" (bina + ke). Khali ho to Channel khulta hai.
+var sb=window.supabase.createClient(SB_URL,SB_KEY);
+var KEY="",shown=false,loadedFor="",curEmail="",sel={ti:0,ii:4};
+var app=document.getElementById("app");
+function $(id){return document.getElementById(id)}
+function toast(t){var e=$("toast");e.textContent=t;e.className="on";setTimeout(function(){e.className=""},2200)}
+function soon(){toast("Coming soon")}
+function menu(){app.classList.remove("buy");app.classList.toggle("open")}
+var PAGES=["home","features","how","themes","pricing","download","safety","changelog","faq","about","dash","setup","win"];
+function go(v,id,nopush){
+  if(PAGES.indexOf(v)<0)v="home";
+  app.classList.remove("open");app.classList.remove("buy");
+  PAGES.forEach(function(x){$("v-"+x).className="view"+(x===v?" on":"")});
+  window.scrollTo(0,0);
+  if(!nopush){try{history.pushState({p:v},"",window.location.pathname+(v==="home"?"":"?p="+v))}catch(e){}}
+  reveal();
+  if(id){setTimeout(function(){var e=$(id);if(e)e.scrollIntoView()},40)}
+}
+window.addEventListener("popstate",function(){var m=location.search.match(/[?&]p=(\w+)/);go(m?m[1]:"home",null,true)});
+var IO=null;
+function reveal(){
+  var els=document.querySelectorAll(".view.on .rv:not(.in)");
+  if(!("IntersectionObserver" in window)){els.forEach(function(e){e.classList.add("in")});return}
+  if(!IO)IO=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");IO.unobserve(x.target)}})},{threshold:.08});
+  els.forEach(function(e){IO.observe(e)});
+}
+
+/* ---- content ---- */
+var FEATS=[
+ ["Talk &amp; Control",[
+  ["🎙","Real-time voice","Insaan ki tarah baat karo, Hindi, English ya Bengali mein. Beech mein stop bolo to Goku ruk jata hai."],
+  ["🌙","Wake word","Hey Goku, Hello Goku ya Wake up Goku bolo. Screen chhue bina Goku jaag jata hai."],
+  ["📱","Full phone control","Apps kholna, torch, brightness aur volume (percent ke saath), hotspot, bluetooth, alarm, screenshot aur lock screen."],
+  ["📞","Calls &amp; WhatsApp","Naam bolo (mummy, papa bhi), Contacts se match hota hai. Message padhna aur bhejna, fail ho to khud dobara koshish."],
+  ["↩️","WhatsApp auto-reply","Personal chats par aapka likha reply khud chala jata hai. Groups mein kabhi nahi. Ek aadmi ko tay ghanton mein ek hi baar."],
+  ["⌨️","Human typing","Aapke bole shabd insaan ki raftaar se type karta hai."]]],
+ ["Notifications",[
+  ["🔔","Reads notifications aloud","Naye messages bol kar sunata hai. OTP aur password kabhi nahi padhta."],
+  ["📲","Only selected apps","Notifications page mein chuno kaun se apps ki notification bolni hai. Baaki chup."],
+  ["📣","Smart announcements","Charger lagane-nikalne, battery 20% aur 10%, aur flight mode par khud batata hai."]]],
+ ["Offline &amp; Brain",[
+  ["📴","Offline mode","Internet jate hi khud offline mode. Saved Gemini awaaz aur offline brain."],
+  ["⬇️","Voice pack","Common sentences ek baar download karo, phir bina internet wahi awaaz."],
+  ["🧠","Long-term memory","Aapki baatein, nickname aur pasand yaad rakhta hai. Bhool jao bolo to mita deta hai."],
+  ["🤝","Second brains","Gemini ke saath OpenAI aur DeepSeek. Pehle kaun, aap chuno."],
+  ["🔔","Update events","Update ke baad kya badla, Play dabao aur Goku bol kar sunaye. Stop se turant band."]]],
+ ["Safety &amp; Guard",[
+  ["🛡","Voice Guardian","Naam sune bina jawab nahi deta. Live aur offline dono mein."],
+  ["🚨","Emergency SOS","Teen contacts tak madad ka sandesh."],
+  ["✋","Touch Guard","Phone chhune par alarm, screen band ho tab bhi."],
+  ["🔐","Screen lock","Goku ka apna PIN ya pattern lock, voice se lock."]]],
+ ["Tools",[
+  ["🎵","Music &amp; Study","Gana lagao, focus timer aur doubt solve."],
+  ["📝","Journal, Documents, Whiteboard","Likhne aur sochne ke tools."],
+  ["💻","Code &amp; Website writer","Bolkar code aur website ka draft."],
+  ["✉️","Email &amp; Captions","Mail aur social captions Goku likhta hai, aapke mail app se bhejta hai."],
+  ["👁","Camera &amp; screen vision","Dekh kar jawab: error samjhana, cheez pehchanna."],
+  ["💾","Backup","Memories aur settings ka backup, API keys ke bina, share karne ke liye safe."]]]
+];
+var HL=[["🎙","Live voice","Real-time, Hindi English Bengali"],["📱","Phone control","Calls, apps, WhatsApp"],["📴","Offline mode","Bina internet bhi"],["🛡","Voice Guardian","Naam par hi jawab"],["🧠","Memory","Aapko yaad rakhta hai"],["🎨","10 Cores","Apna look chuno"]];
+var CORES=[["Core 1–5","Pehle ke UIs: nila ring, cosmic sun aur planets, 3D particle sphere, black hole wali galaxy aur Buddy jelly face."],["Core 6","Goku ka sabse pehla neela ring."],["Core 7","Rang badalti aurora aura."],["Core 8","Ghoomte gyro rings."],["Core 9","Saans leta plasma heart."],["Core 10","Awaaz ke saath uchhalta round spectrum."]];
+var SAFE=[["🔒","Aapka data","API keys backup mein nahi jaati. Notifications sirf bolne ke liye padhi jaati hain, store ya upload nahi."],["🙈","OTP aur password","Kabhi zor se nahi padhe jate."],["✅","Permission aapke haath","Mic, notification access aur accessibility pehle aapki ijazat ke baad hi."],["🛡","Original app","Chhedchhad hui copy block ho jaati hai, sirf official app The Omkar se lo."]];
+var CL=[["Big update v1.2.40","Naya licence system: ek key sirf ek phone par chalti hai, aur server se jaanch hoti hai. Command system mein 30+ naye commands. UI aur smooth, bahut saare bugs fixed."],["Best friend mode","Goku ab pura dost aur best friend, Boss wali baat-cheet. Romantic hissa sirf Brishti persona mein."],["Stronger commands","WhatsApp, YouTube aur call 2-3 baar khud koshish. Volume brightness percent mein. Contacts se naam match."],["Ten Cores","Core 1 se 10 aur UI V1 se V4."],["DeepSeek brain","OpenAI ke saath DeepSeek bhi second brain."],["Screen lock","PIN ya pattern lock aur voice lock."],["Guardians fixed","Touch Guard ka jhootha alarm gaya. Voice Guardian live talk mein bhi."],["No more Coming soon","Music, Study, Whiteboard, Journal, Documents, Website, Coding, Typing sab chalte hain."],["Listening upgrade","Poori baat sunta hai aur stop bolte hi chup."],["Saved voice","Gemini ki awaaz phone mein save, offline bhi."]];
+var FAQ=[["APK kaise install karein?","Free download se APK kholein aur Install unknown apps ki permission dein."],["Update kaise karein?","App mein 3 line menu, License, App Update, Check for updates. Purane versions se bhi seedha update hota hai."],["Offline mein kya chalta hai?","Voice pack aur offline brain se baat. Live Gemini awaaz ke liye internet chahiye."],["Kaun si languages?","Hindi, English aur Bengali."],["Phone badalna ho to?","Humse WhatsApp par contact karein. Hum purane phone se key hata denge, phir naye phone par wahi key daalein. Bacha hua time wahi rehta hai."],["Free mein kya milta hai?","Roz 30 minute live baat. Saare tools ke liye licence."],["Meri notifications ka kya hota hai?","Sirf bolne ke liye padhi jaati hain, kuch upload ya store nahi hota. Aap chuno kaun se apps."]];
+function sc(i,t,d){return '<div class="sc rv"><i>'+i+'</i><h3>'+t+'</h3><p>'+d+'</p></div>'}
+function fill(){
+  $("featlist").innerHTML=FEATS.map(function(g){return '<div class="sk">'+g[0]+'</div>'+g[1].map(function(x){return sc(x[0],x[1],x[2])}).join("")}).join("");
+  $("hl").innerHTML=HL.map(function(x){return '<div class="sc rv"><i>'+x[0]+'</i><h3>'+x[1]+'</h3><p>'+x[2]+'</p></div>'}).join("");
+  $("cores").innerHTML=CORES.map(function(x,i){return sc(["🌌","🔵","🌈","🌀","💠","📊"][i],x[0],x[1])}).join("");
+  $("safelist").innerHTML=SAFE.map(function(x){return sc(x[0],x[1],x[2])}).join("");
+  $("cl").innerHTML=CL.map(function(x){return '<div class="sc rv"><h3>'+x[0]+'</h3><p>'+x[1]+'</p></div>'}).join("");
+  $("faqbox").innerHTML='<h2>FAQ</h2>'+FAQ.map(function(x){return '<details><summary>'+x[0]+'</summary><p style="margin-top:8px">'+x[1]+'</p></details>'}).join("");
+}
+
+
+/* ---- Buy Now ---- */
+var TIERS=[
+ {t:"Goku AI Pro",items:[{n:"7 Days",p:200},{n:"15 Days",p:300},{n:"30 Days",p:500,pop:1}]},
+ {t:"Goku AI Pro Max",items:[{n:"Lifetime",p:1500}]}
+];
+function priceList(){
+  function row(it){return '<div class="pr"><span>'+it.n+(it.pop?'<em>Most popular</em>':'')+'</span><b>₹'+it.p+'</b></div>'}
+  $("pp").innerHTML=TIERS[0].items.map(row).join("");$("pm").innerHTML=TIERS[1].items.map(row).join("");
+}
+function renderPlans(){
+  var box=$("plans");box.textContent="";
+  TIERS.forEach(function(T,ti){
+    var h=document.createElement("div");h.className="sec";h.textContent=T.t;box.appendChild(h);
+    T.items.forEach(function(it,ii){
+      var b=document.createElement("button");b.type="button";
+      b.className="plan"+(sel&&sel.ti===ti&&sel.ii===ii?" on":"");
+      var l=document.createElement("span");l.textContent=it.n;
+      if(it.pop){var m=document.createElement("em");m.textContent="Most popular";l.appendChild(m)}
+      var pr=document.createElement("b");pr.textContent="₹"+it.p;
+      b.appendChild(l);b.appendChild(pr);
+      b.onclick=function(){sel={ti:ti,ii:ii};renderPlans()};
+      box.appendChild(b);
+    });
+  });
+  var T2=TIERS[sel.ti],it2=T2.items[sel.ii];
+  $("sum").textContent="Chuna hua: "+T2.t+" · "+it2.n+" · ₹"+it2.p;
+}
+function openBuy(){app.classList.remove("open");renderPlans();app.classList.add("buy")}
+function closeBuy(){app.classList.remove("buy")}
+function pay(){
+  var T=TIERS[sel.ti],it=T.items[sel.ii];
+  var msg="Namaste, mujhe "+T.t+" ("+it.n+", ₹"+it.p+") lena hai."+(curEmail?" Email: "+curEmail:"");
+  try{navigator.clipboard.writeText(msg)}catch(e){}
+  if(WA_NUMBER){window.open("https://wa.me/"+WA_NUMBER+"?text="+encodeURIComponent(msg),"_blank","noopener");return}
+  if(!WA_LINK){toast("Payment link jald add hoga");return}
+  toast("Message copy ho gaya. Channel khul raha hai");
+  window.open(WA_LINK,"_blank","noopener");
+}
+
+/* ---- Login / Dashboard ---- */
+function showLogin(){
+  $("login").style.display="block";$("nolic").style.display="none";
+  var p=$("panel");p.style.display="none";p.className="";
+  KEY="";shown=false;loadedFor="";curEmail="";$("key").textContent="••••-••••-••••-••••";
+}
+function fmt(d,withYear){
+  if(!d)return "-";
+  var x=new Date(d);if(isNaN(x))return "-";
+  var o={day:"numeric",month:"short"};if(withYear)o.year="numeric";
+  return x.toLocaleDateString("en-GB",o);
+}
+async function gLogin(){
+  var r=await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname}});
+  if(r.error)toast("Error: "+r.error.message);
+}
+
+/* ---- Email + password (verification link Supabase bhejta hai) ---- */
+function emMsg(t,bad){var e=$("emmsg");e.textContent=t;e.className="hint "+(bad?"bad":"ok")}
+function emVals(needPw){
+  var e=$("em").value.trim(),p=$("pw").value;
+  if(!/^\S+@\S+\.\S+$/.test(e)){emMsg("Sahi email daalein",1);return null}
+  if(needPw&&p.length<6){emMsg("Password kam se kam 6 akshar ka rakhein",1);return null}
+  return {e:e,p:p};
+}
+function emBack(){return window.location.origin+window.location.pathname}
+async function emSignup(){
+  var v=emVals(true);if(!v)return;
+  emMsg("Account ban raha hai...");
+  var r=await sb.auth.signUp({email:v.e,password:v.p,options:{emailRedirectTo:emBack()}});
+  if(r.error){emMsg(r.error.message,1);return}
+  if(r.data&&r.data.user&&r.data.user.identities&&r.data.user.identities.length===0){emMsg("Ye email pehle se registered hai. Login karein.",1);return}
+  if(r.data&&r.data.session){emMsg("Account ban gaya.");return}
+  emMsg("Verification link "+v.e+" par bhej diya. Email (aur spam) check karke link dabayein, phir Login karein.");
+}
+async function emLogin(){
+  var v=emVals(true);if(!v)return;
+  emMsg("Login ho raha hai...");
+  var r=await sb.auth.signInWithPassword({email:v.e,password:v.p});
+  if(r.error){
+    var m=r.error.message||"";
+    emMsg(/confirm/i.test(m)?"Email abhi verify nahi hua. Inbox ya spam mein link dabayein, ya dobara bhejein.":(/invalid/i.test(m)?"Email ya password galat hai":m),1);
+    return;
+  }
+  emMsg("");
+}
+async function emResend(){
+  var v=emVals(false);if(!v)return;
+  var r=await sb.auth.resend({type:"signup",email:v.e,options:{emailRedirectTo:emBack()}});
+  if(r.error)emMsg(r.error.message,1);else emMsg("Verification email dobara bhej diya.");
+}
+async function emReset(){
+  var v=emVals(false);if(!v)return;
+  var r=await sb.auth.resetPasswordForEmail(v.e,{redirectTo:emBack()});
+  if(r.error)emMsg(r.error.message,1);else emMsg("Password reset ka link email par bhej diya.");
+}
+async function loadLicense(user){
+  if(!user||loadedFor===user.id)return;
+  loadedFor=user.id;curEmail=user.email||"";
+  $("login").style.display="none";
+  var r=await sb.from("licenses").select("*").order("created_at",{ascending:false}).limit(1).maybeSingle();
+  if(r.error){toast("Data load nahi hua");$("login").style.display="block";loadedFor="";return}
+  if(!r.data){
+    $("nolic").style.display="block";
+    $("nolic-t").textContent="Is account ("+curEmail+") par abhi koi licence nahi hai.";
+    return;
+  }
+  var d=r.data,exp=d.expires_at?new Date(d.expires_at):null,expired=!!(exp&&exp<new Date());
+  var act=String(d.status||"").toLowerCase()==="active"&&!expired;
+  KEY=d.license_key||"";
+  $("who").textContent=curEmail;
+  var ps=$("pst");ps.textContent=act?"ACTIVE":(expired?"EXPIRED":String(d.status||"INACTIVE").toUpperCase());
+  ps.className=act?"ok":"bad";
+  $("pdot").style.setProperty("--c",act?"var(--ok)":"var(--bad)");
+  $("plan").textContent=d.plan||"Licence";
+  $("exp").textContent=exp?fmt(exp,true):"Lifetime";
+  $("lnk").textContent=fmt(d.linked_at,true);
+  $("phst").textContent=d.phone_name?"Linked":"Not linked";
+  $("pname").textContent=d.phone_name||"Koi phone link nahi";
+  $("pmeta").textContent=(d.app_version?"· v"+d.app_version+" ":"")+"· last seen "+fmt(d.last_seen,false);
+  var p=$("panel");p.style.display="block";void p.offsetWidth;p.className="show";
+}
+async function logout(){
+  await sb.auth.signOut();
+  showLogin();go("home");toast("Logged out");
+}
+function tkey(){
+  if(!KEY){return}
+  if(shown){shown=false;$("key").textContent="••••-••••-••••-••••";return}
+  shown=true;
+  var el=$("key"),c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",n=0;
+  var t=setInterval(function(){n++;var s="";for(var i=0;i<KEY.length;i++){s+=(KEY[i]==="-"||i<n)?KEY[i]:c[Math.floor(Math.random()*c.length)]}el.textContent=s;if(n>=KEY.length)clearInterval(t)},45);
+}
+function ckey(){
+  if(!KEY){return}
+  try{navigator.clipboard.writeText(KEY);toast("Copied")}catch(e){toast("Copy nahi hua")}
+}
+
+var qs=window.location.hash+window.location.search;
+var fromLink=/access_token|[?&]code=/.test(qs);
+var em=qs.match(/error_description=([^&]+)/);
+if(em){toast(decodeURIComponent(em[1].replace(/\+/g," ")));history.replaceState(null,"",window.location.pathname);setTimeout(function(){go("dash")},50)}
+sb.auth.onAuthStateChange(function(ev,sess){
+  if(sess&&sess.user){
+    setTimeout(function(){
+      loadLicense(sess.user);
+      if(fromLink&&ev==="SIGNED_IN"){go("dash");fromLink=false;history.replaceState(null,"",window.location.pathname)}
+    },0);
+  }else if(ev==="SIGNED_OUT"){showLogin()}
+});
+fill();priceList();
+(function(){var m=location.search.match(/[?&]p=(\w+)/);if(m&&!/access_token|code=/.test(qs))go(m[1],null,true);else reveal()})();
+</script>
+</body>
+</html>
